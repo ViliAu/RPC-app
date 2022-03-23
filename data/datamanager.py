@@ -29,14 +29,16 @@ class DB:
             for note in topic_element.findall('note'):
                 note_list.append(f"\tTitle: {note.get('name')}\n\tText: {note.find('text').text}\n\tCreated: {note.find('timestamp').text}")
                 link = note.find('link')
-                if link != None:
+                if link is not None:
                     print(link.text)
                     note_list.append(f"\tRelated article: {link.text}")
+                note_list.append("\n")
             return "\n".join(note_list)
         else:
             return None
 
     def add_note(self, note: Note, search_terms: str):
+        # Check if the topic exists, if not, add a new one
         new_topic = self.root.find(f"topic[@name='{note.topic}']")
         if new_topic is None:
             new_topic = ET.SubElement(self.root,"topic", name=note.topic)
