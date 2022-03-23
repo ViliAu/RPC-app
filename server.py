@@ -8,8 +8,8 @@ class RequestHandler(SimpleXMLRPCRequestHandler):
 class server_rpc_commands:
     def __init__(self) -> None:
         self.DB = datamanager.DB("./data/db.xml")
-    def add_note(self, topic: str, title: str, text: str):
-        self.DB.add_note(datamanager.Note(topic, title, text))
+    def add_note(self, topic: str, title: str, text: str, search_terms: str):
+        self.DB.add_note(datamanager.Note(topic, title, text), search_terms)
         return "Note added!"
     def find_note(self, topic: str):
         notes = self.DB.find_topic(topic)
@@ -28,11 +28,11 @@ def create_server():
 
         # Run the server's main loop
         try:
-            print("Exit with Ctrl + c or with 0")
+            print("Server started! Close server with ctrl + c")
             server.serve_forever()
         except KeyboardInterrupt:
-            server.server_close()
             print("Closing server.")
+            server.server_close()
 
 if __name__ == '__main__':
     create_server()

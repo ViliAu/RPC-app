@@ -6,25 +6,28 @@ def menu():
     return int(
 input(
 """
-0) Exit
-1) Send a note to the server
+1) Add a note
 2) Fetch a note
-3) Query wikipedia
+0) Exit
 """))
 
 def start_client():
     with xmlrpc.client.ServerProxy('http://localhost:8000') as proxy:
         if proxy:
-            while True:
-                i = menu()
-                if i == 0:
-                    break
-                elif i == 1:
-                    send_note(proxy)
-                elif i == 2:
-                    find_note(proxy)
-                else:
-                    print("Invalid choice\n")
+            try:
+                while True:
+                    i = menu()
+                    if i == 0:
+                        print("Closing client.")
+                        break
+                    elif i == 1:
+                        send_note(proxy)
+                    elif i == 2:
+                        find_note(proxy)
+                    else:
+                        print("Invalid choice\n")
+            except KeyboardInterrupt:
+                print("Closing client.")
         else:
             print("Couldn't connect to server.")
         
@@ -32,8 +35,9 @@ def send_note(proxy):
     topic = input("Give a topic: ")
     title = input("Give a title: ")
     text = input("Give text for the note: ")
+    search_terms = input("Give wikipedia search terms (optional):")
     try:
-        proxy.add_note(topic, title, text)
+        proxy.add_note(topic, title, text, search_terms)
         print("Note added!")
     except:
         traceback.print_exc
